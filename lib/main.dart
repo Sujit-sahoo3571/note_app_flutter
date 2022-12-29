@@ -111,6 +111,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                       style: textstyle),
                                   Text("Content : ${note["content"]} ",
                                       style: textstyle),
+                                  Text("Description : ${note["description"]} ",
+                                      style: textstyle),
                                 ],
                               ),
                             ),
@@ -172,7 +174,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     onPressed: () {
                       DatabaseHelper.insetNote(Note(
                               title: titleController.text,
-                              content: contentController.text))
+                              content: contentController.text,
+                              description: DateTime.now().toIso8601String()))
                           .whenComplete(() => setState(() {}));
                       titleController.clear();
                       contentController.clear();

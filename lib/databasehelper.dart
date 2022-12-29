@@ -17,7 +17,8 @@ class DatabaseHelper {
   // initialize database
   static Future<Database> initDatabase() async {
     String path = p.join(await getDatabasesPath(), "notes_database.db");
-    return await openDatabase(path, version: 1, onCreate: _onCreate);
+    return await openDatabase(path,
+        version: 2, onCreate: _onCreate, onUpgrade: _onUpgrade);
   }
 
   static Future _onCreate(Database db, int version) async {
@@ -29,6 +30,21 @@ content TEXT)
 
     // ignore: avoid_print
     print("ON create was called . ....");
+  }
+
+  // onupgrade
+  static Future<void> _onUpgrade(
+      Database db, int oldVersion, int newVersion) async {
+    // db.execute(
+    //     "ALTER TABLE notes ADD COLUMN description TEXT NOT NULL DEFAULT ''");
+    db.execute("ALTER TABLE notes ADD COLUMN description TEXT NULL");
+
+    db.execute('''
+CREATE TABLE todos(id INTEGER PRIMARY KEY, 
+title TEXT, 
+value BOOL)
+''');
+    print("upgrade  the notes");
   }
 
   //inset note
@@ -50,7 +66,8 @@ content TEXT)
         (i) => Note(
                 id: map[i]["id"],
                 title: map[i]["title"],
-                content: map[i]["content"])
+                content: map[i]["content"],
+                description: map[i]["description"])
             .toMap());
   }
 
@@ -72,7 +89,7 @@ content TEXT)
   //delete all
   static Future<void> deleteAll() async {
     Database db = await getDatabase;
-    await db.delete("notes"  );
+    await db.delete("notes");
   }
 }
 
@@ -81,15 +98,21 @@ class Note {
   final int? id;
   final String title;
   final String content;
+  String? description;
 
-  Note({this.id, required this.title, required this.content});
+  Note({this.id, required this.title, required this.content, this.description});
 
   Map<String, dynamic> toMap() {
-    return {"id": id, "title": title, "content": content};
+    return {
+      "id": id,
+      "title": title,
+      "content": content,
+      "description": description
+    };
   }
 
   @override
   String toString() {
-    return "Notes {id: $id, title : $title, content: $content }";
+    return "Notes {id: $id, title : $title, content: $content , description: $description }";
   }
 }
