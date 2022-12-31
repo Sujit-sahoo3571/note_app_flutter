@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:note_app_flutter/databasehelper.dart';
 
 void main() {
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      home: const MyHomePage(title: 'Note App'),
+      home: const MyHomePage(title: 'Todorey Pro'),
     );
   }
 }
@@ -120,7 +121,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                         Text("Content : ${note["content"]} ",
                                             style: textstyle),
                                         Text(
-                                            "Description : ${note["description"]} ",
+                                            "Time :  ${DateFormat("EEE, dd-MMM-yyyy hh:mm a ").format(DateTime.now())}",
+                                            // ${note["description"]} ",
                                             style: textstyle),
                                       ],
                                     ),
@@ -282,7 +284,9 @@ class _MyHomePageState extends State<MyHomePage> {
                       DatabaseHelper.insetNote(Note(
                               title: titleController.text,
                               content: contentController.text,
-                              description: DateTime.now().toIso8601String()))
+                              description:
+                                  DateFormat("EEE, dd-MMM-yyyy hh:mm a ")
+                                      .format(DateTime.now())))
                           .whenComplete(() => setState(() {}));
                       titleController.clear();
                       contentController.clear();

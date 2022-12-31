@@ -72,7 +72,7 @@ value BOOL)
     Database db = await getDatabase;
     await db.insert("todos", todo.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
-    print(await db.query("todos"));
+    // print(await db.query("todos"));
   }
 
   // retrive data notes
@@ -128,7 +128,7 @@ value BOOL)
 
     await db.update("todos", {"value": currentValue == 0 ? 1 : 0},
         where: "id=?", whereArgs: [id]);
-    print(await db.query("todos"));
+    // print(await db.query("todos"));
   }
 
   //delete
