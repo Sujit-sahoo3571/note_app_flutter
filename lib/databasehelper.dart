@@ -17,35 +17,46 @@ class DatabaseHelper {
   // initialize database
   static Future<Database> initDatabase() async {
     String path = p.join(await getDatabasesPath(), "notes_database.db");
-    return await openDatabase(path,
-        version: 2, onCreate: _onCreate, onUpgrade: _onUpgrade);
+    return await openDatabase(
+      path,
+      version: 1,
+      onCreate: _onCreate,
+    ); // onUpgrade: _onUpgrade
   }
 
   static Future _onCreate(Database db, int version) async {
-    await db.execute(''' 
+    Batch batch = db.batch();
+    batch.execute(''' 
 CREATE TABLE notes(id INTEGER PRIMARY KEY, 
 title TEXT, 
-content TEXT)
+content TEXT,
+description TEXT NULL)
 ''');
 
-    // ignore: avoid_print
-    print("ON create was called . ....");
-  }
-
-  // onupgrade
-  static Future<void> _onUpgrade(
-      Database db, int oldVersion, int newVersion) async {
-    // db.execute(
-    //     "ALTER TABLE notes ADD COLUMN description TEXT NOT NULL DEFAULT ''");
-    db.execute("ALTER TABLE notes ADD COLUMN description TEXT NULL");
-
-    db.execute('''
+    batch.execute('''
 CREATE TABLE todos(id INTEGER PRIMARY KEY, 
 title TEXT, 
 value BOOL)
 ''');
-    print("upgrade  the notes");
+    batch.commit();
+    // ignore: avoid_print
+    print("ON create was called . ....");
   }
+
+//   // onupgrade
+//   static Future<void> _onUpgrade(
+//       Database db, int oldVersion, int newVersion) async {
+//     // db.execute(
+//     //     "ALTER TABLE notes ADD COLUMN description TEXT NOT NULL DEFAULT ''");
+//     db.execute("ALTER TABLE notes ADD COLUMN description TEXT NULL");
+
+//     db.execute('''
+// CREATE TABLE todos(id INTEGER PRIMARY KEY,
+// title TEXT,
+// value BOOL)
+// ''');
+//     print("upgrade  the notes");
+//   }
 
   //inset note
 
